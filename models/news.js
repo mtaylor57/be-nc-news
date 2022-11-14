@@ -14,8 +14,8 @@ exports.selectArticles = () => {
     articles.created_at,
     articles.votes,
     COUNT(*) AS comment_count FROM articles
-    JOIN comments
-    ON articles.article_id = comments.comment_id
+    FULL OUTER JOIN comments
+    ON articles.article_id = comments.article_id
     GROUP BY articles.article_id
     ORDER BY created_at DESC;
     `)
