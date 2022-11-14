@@ -28,3 +28,25 @@ describe('/api/topics', () => {
         })
     });
 });
+
+
+
+describe.only('/api/articles/:article_id', () => {
+    test('should get an article object specified by the endpoint', () => {
+        return request(app)
+        .get('/api/articles/2')
+        .expect(200)
+        .then((result) => {
+            const { article } = result.body
+            expect(article[0]).toMatchObject({
+                article_id: 2,
+                title: expect.any(String),
+                topic: 'mitch',
+                author: 'icellusedkars',
+                body: expect.any(String),
+                created_at: '2020-10-16T05:03:00.000Z',
+                votes: expect.any(Number)
+            })
+        })
+    });
+});
