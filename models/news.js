@@ -24,8 +24,16 @@ exports.selectArticles = () => {
 
 
 exports.selectArticleById = (articleId) => {
+    if(!Number(articleId)){
+        return Promise.reject({status:400, msg:'id is not a number'})
+    }
     return db.query(`
     SELECT * FROM articles
     WHERE article_id = $1;
-    `,[articleId]).then((article) => article.rows)
+    `,[articleId]).then((article) => {
+        if (article.rows.length === 0){
+            return Promise.reject({status:404,msg:'id not found'})
+          }
+        return article.rows[0]
+    })
 }

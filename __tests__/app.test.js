@@ -38,7 +38,7 @@ describe.only('/api/articles/:article_id', () => {
         .expect(200)
         .then((result) => {
             const { article } = result.body
-            expect(article[0]).toMatchObject({
+            expect(article).toMatchObject({
                 article_id: 2,
                 title: expect.any(String),
                 topic: 'mitch',
@@ -47,6 +47,22 @@ describe.only('/api/articles/:article_id', () => {
                 created_at: '2020-10-16T05:03:00.000Z',
                 votes: expect.any(Number)
             })
+        })
+    });
+    test('should return an error message if id not found', () => {
+        return request(app)
+        .get('/api/articles/1000')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('id not found')
+        })
+    });
+    test('should return an error message if id not a number', () => {
+        return request(app)
+        .get('/api/articles/a')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('id is not a number')
         })
     });
 });
