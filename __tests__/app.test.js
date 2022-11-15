@@ -107,7 +107,6 @@ describe('/api/articles/:article_id/comments', () => {
         .expect(200)
         .then((result) => {
             const { comments } = result.body
-            expect(comments).toBeInstanceOf(Array)
             expect(comments).toHaveLength(11)
             expect(comments).toBeSortedBy('created_at',{descending:true})
             comments.forEach((comment) => {
@@ -127,7 +126,6 @@ describe('/api/articles/:article_id/comments', () => {
         .expect(200)
         .then((result) => {
             const { comments } = result.body
-            expect(comments).toBeInstanceOf(Array)
             expect(comments).toHaveLength(0)
         })
     });
