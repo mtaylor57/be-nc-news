@@ -30,41 +30,6 @@ describe('/api/topics', () => {
 });
 
 
-
-
-describe('/api/articles/:article_id', () => {
-    test('should get an article object specified by the endpoint', () => {
-        return request(app)
-        .get('/api/articles/2')
-        .expect(200)
-        .then((result) => {
-            const { article } = result.body
-            expect(article).toMatchObject({
-                article_id: 2,
-                title: expect.any(String),
-                topic: 'mitch',
-                author: 'icellusedkars',
-                body: expect.any(String),
-                created_at: '2020-10-16T05:03:00.000Z',
-                votes: expect.any(Number)
-            })
-        })
-    });
-    test('should return an error message if id not found', () => {
-        return request(app)
-        .get('/api/articles/1000')
-        .expect(404)
-        .then(({body}) => {
-            expect(body.msg).toBe('id not found')
-        })
-    });
-    test('should return an error message if id not a number', () => {
-        return request(app)
-        .get('/api/articles/a')
-        .expect(400)
-        .then(({body}) => {
-            expect(body.msg).toBe('id is not a number')
-
 describe('/api/articles', () => {
     test('should get an array of articles with correct properties and comment count', () => {
         return request(app)
@@ -98,3 +63,39 @@ describe('/api/articles', () => {
         })
     });
 });
+
+describe('/api/articles/:article_id', () => {
+    test('should get an article object specified by the endpoint', () => {
+        return request(app)
+        .get('/api/articles/2')
+        .expect(200)
+        .then((result) => {
+            const { article } = result.body
+            expect(article).toMatchObject({
+                article_id: 2,
+                title: expect.any(String),
+                topic: 'mitch',
+                author: 'icellusedkars',
+                body: expect.any(String),
+                created_at: '2020-10-16T05:03:00.000Z',
+                votes: expect.any(Number)
+            })
+        })
+    });
+    test('should return an error message if id not found', () => {
+        return request(app)
+        .get('/api/articles/1000')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('id not found')
+        })
+    });
+    test('should return an error message if id not a number', () => {
+        return request(app)
+        .get('/api/articles/a')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('id is not a number')
+        })
+    })
+})
