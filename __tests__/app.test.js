@@ -146,3 +146,53 @@ describe('/api/articles/:article_id/comments', () => {
         })
     })
 });
+
+describe('PATCH/api/articles/:article_id', () => {
+    test('should patch an article with update vote count', () => {
+        const articleInfo = {inc_votes: 10}
+        return request(app)
+        .patch('/api/articles/3')
+        .send(articleInfo)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.article).toMatchObject({
+                title: "Eight pug gifs that remind me of mitch",
+                topic: "mitch",
+                author: "icellusedkars",
+                body: "some gifs",
+                created_at: "2020-11-03T09:12:00.000Z",
+                votes: 10
+            })
+        })
+    });
+    test('should return a message if article id not a number', () => {
+        const articleInfo = {inc_votes: 10}
+        return request(app)
+        .patch('/api/articles/a')
+        .send(articleInfo)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('id is not a number')
+        });
+    })
+    test('should return a message if article id not found', () => {
+        const articleInfo = {inc_votes: 10}
+        return request(app)
+        .patch('/api/articles/1000')
+        .send(articleInfo)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('article not found')
+        });
+    })
+    test('should return a message if passed object has incorrect data type', () => {
+        const articleInfo = {inc_votes: 'hello'}
+        return request(app)
+        .patch('/api/articles/3')
+        .send(articleInfo)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('incorrect data type passed')
+        });
+    })
+});

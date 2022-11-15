@@ -56,3 +56,21 @@ exports.selectCommentsByArticleId = (articleId) => {
         return comments.rows
     })
 }
+
+exports.editArticle = (articleId,articleInfo) => {
+    if(!Number(articleId)){
+        return Promise.reject({status:400, msg:'id is not a number'})
+    }
+    const {inc_votes} = articleInfo
+    return checkArticleExists(articleId).then(() => {
+        return db.query(`
+        UPDATE articles
+        SET votes = votes + $1
+        WHERE article_id = $2
+        RETURNING *;
+        `,[inc_votes,articleId])
+    })
+    .then((article) => {
+        return article.rows[0]
+    })
+}
