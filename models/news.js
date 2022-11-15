@@ -1,4 +1,5 @@
 const db = require('../db/connection.js')
+const { checkArticleExists } = require('../utils/utils.js')
 
 exports.selectTopics = () => {
     return db.query(`SELECT * FROM topics;`)
@@ -36,4 +37,22 @@ exports.selectArticleById = (articleId) => {
         return article.rows[0]
     })
 
+}
+
+exports.selectCommentsByArticleId = (articleId) => {
+    if(!Number(articleId)){
+        return Promise.reject({status:400, msg:'id is not a number'})
+    }
+    return checkArticleExists(articleId).then(() => {
+        //only gets in here if the article exists
+        //otherwise goes straight to catch
+        return db.query(`
+        SELECT comment_id,votes,created_at,author,body FROM comments
+        WHERE article_id = $1
+        ORDER BY created_at DESC;
+        `,[articleId])
+    })
+    .then((comments) => {
+        return comments.rows
+    })
 }

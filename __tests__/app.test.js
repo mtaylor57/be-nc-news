@@ -99,3 +99,52 @@ describe('/api/articles/:article_id', () => {
         })
     })
 })
+
+describe('/api/articles/:article_id/comments', () => {
+    test('should get all comments associated with article id with most recent first', () => {
+        return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then((result) => {
+            const { comments } = result.body
+            expect(comments).toBeInstanceOf(Array)
+            expect(comments).toHaveLength(11)
+            expect(comments).toBeSortedBy('created_at',{descending:true})
+            comments.forEach((comment) => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    body: expect.any(String),
+                    votes: expect.any(Number),
+                    author: expect.any(String),
+                    created_at: expect.any(String)
+                })
+            })
+        })
+    });
+    test('should get an empty array when article id is valid but has no assocoiated comments', () => {
+        return request(app)
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then((result) => {
+            const { comments } = result.body
+            expect(comments).toBeInstanceOf(Array)
+            expect(comments).toHaveLength(0)
+        })
+    });
+    test('should return an error message if id not found', () => {
+        return request(app)
+        .get('/api/articles/1000/comments')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('article not found')
+        })
+    });
+    test('should return an error message if id not a number', () => {
+        return request(app)
+        .get('/api/articles/a/comments')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('id is not a number')
+        })
+    })
+});
