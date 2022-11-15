@@ -56,3 +56,22 @@ exports.selectCommentsByArticleId = (articleId) => {
         return comments.rows
     })
 }
+
+exports.insertComment = (articleId,newComment) => {
+    if(!Number(articleId)){
+        return Promise.reject({status:400, msg:'id is not a number'})
+    }
+    return checkArticleExists(articleId).then(() => {
+        const {username,body} = newComment
+        return db.query(`
+        INSERT INTO comments
+        (author,body,article_id)
+        VALUES
+        ($1,$2,$3)
+        RETURNING *;
+        `,[username,body,articleId])
+    })
+    .then((comment) => {
+        return comment.rows[0]
+    })
+}

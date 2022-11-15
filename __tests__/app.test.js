@@ -146,3 +146,69 @@ describe('/api/articles/:article_id/comments', () => {
         })
     })
 });
+
+describe('/api/articles/:article_id/comments', () => {
+    test('should post an object with username and body properties', () => {
+        const newComment = { 
+            username: 'butter_bridge',
+            body:'testing the post comment functionality',
+            random: 'should be ignored'
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(201)
+        .then(({body}) => {
+            expect(body.comment).toMatchObject({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                article_id: expect.any(Number),
+                created_at: expect.any(String),
+                author: 'butter_bridge',
+                body:'testing the post comment functionality'
+            })
+        })
+    });
+    test('should return an error message if id not a number', () => {
+        return request(app)
+        .post('/api/articles/a/comments')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('id is not a number')
+        })
+    })
+    test('should return an error message if id not found', () => {
+        return request(app)
+        .post('/api/articles/1000/comments')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('article not found')
+        })
+    })
+    test('should return a message if the passed object is missing required properties', () => {
+        const newComment = { 
+            username: 'butter_bridge',
+            random: 'should be ignored'
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('missing required field')
+        })
+    });
+    test('should return a message if the passed object has username not in database', () => {
+        const newComment = { 
+            username: 'baduser',
+            body: 'testing the post comment functionality'
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('invalid foreign key')
+        })
+    });
+});
