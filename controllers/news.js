@@ -1,3 +1,4 @@
+
 const { selectTopics, selectArticles, selectArticleById } = require('../models/news.js')
 
 exports.getTopics = (req,res,next) => {
@@ -10,6 +11,7 @@ exports.getArticles = (req,res,next) => {
     selectArticles().then((articles) => {
         res.status(200).send({articles})
     })
+
 }
 
 exports.getArticleById = (req,res,next) => {
