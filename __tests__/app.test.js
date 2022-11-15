@@ -31,7 +31,7 @@ describe('/api/topics', () => {
 
 
 
-describe.only('/api/articles/:article_id', () => {
+describe('/api/articles/:article_id', () => {
     test('should get an article object specified by the endpoint', () => {
         return request(app)
         .get('/api/articles/2')
