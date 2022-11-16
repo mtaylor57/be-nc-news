@@ -185,6 +185,16 @@ describe('PATCH/api/articles/:article_id', () => {
             expect(body.msg).toBe('article not found')
         });
     })
+    test('should return a message if passed object has missing property', () => {
+        const articleInfo = {random: 10}
+        return request(app)
+        .patch('/api/articles/3')
+        .send(articleInfo)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('missing required field')
+        });
+    })
     test('should return a message if passed object has incorrect data type', () => {
         const articleInfo = {inc_votes: 'hello'}
         return request(app)

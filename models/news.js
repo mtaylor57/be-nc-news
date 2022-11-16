@@ -58,7 +58,7 @@ exports.selectCommentsByArticleId = (articleId) => {
 }
 
 exports.editArticle = (articleId,articleInfo) => {
-    if(!Number(articleId)){
+    if(isNaN(Number(articleId))){
         return Promise.reject({status:400, msg:'id is not a number'})
     }
     const {inc_votes} = articleInfo
