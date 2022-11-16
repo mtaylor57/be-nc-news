@@ -4,7 +4,8 @@ const { getTopics,
         getArticles, 
         getArticleById,
         getCommentsByArticleId,
-        postComment 
+        patchArticle,
+        postComment
         } = require('./controllers/news.js')
 
 const app = express()
@@ -18,6 +19,8 @@ app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
 
 app.post('/api/articles/:article_id/comments',postComment)
 
+app.patch('/api/articles/:article_id',patchArticle)
+
 app.use((err,req,res,next) => {
     if(err.msg && err.status) {
         res.status(err.status).send({ msg: err.msg });
@@ -27,15 +30,12 @@ app.use((err,req,res,next) => {
 })
 
 app.use((err,req,res,next) => {
-    if (err.code === "23502") {
-        res
-          .status(400)
-          .send({ msg: "missing required field" });
-      } else {
+    if(err.code === '23502'){
+        res.status(400).send({msg: 'missing required field'})
+    } else {
         next(err)
-      }
+    }
 })
-
 app.use((err,req,res,next) => {
     if (err.code === "23503") {
         res
@@ -45,4 +45,12 @@ app.use((err,req,res,next) => {
         next(err)
       }
 })
+app.use((err,req,res,next) => {
+    if (err.code === "22P02") {
+    res.status(400).send({ msg: "incorrect data type passed" });
+  }
+})
+
+
+
 module.exports = app
