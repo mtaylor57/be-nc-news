@@ -29,7 +29,7 @@ describe("/api/topics", () => {
   });
 });
 
-describe("/api/articles", () => {
+describe.only("/api/articles", () => {
   test("should get an array of articles with correct properties and comment count", () => {
     return request(app)
       .get("/api/articles")
