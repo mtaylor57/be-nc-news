@@ -58,7 +58,7 @@ exports.selectCommentsByArticleId = (articleId) => {
 }
 
 exports.insertComment = (articleId,newComment) => {
-    if(!Number(articleId)){
+    if(isNaN(Number(articleId))){
         return Promise.reject({status:400, msg:'id is not a number'})
     }
     return checkArticleExists(articleId).then(() => {
