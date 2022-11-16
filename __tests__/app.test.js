@@ -115,7 +115,7 @@ describe("/api/articles", () => {
         expect(body.msg).toBe('bad request!')
       })
     });
-    test.only('what if query doesnt exist', () => {
+    test('what if query doesnt exist', () => {
       return request(app)
       .get('/api/articles?bad_query=somethingbad')
       .expect(400)
