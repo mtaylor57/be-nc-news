@@ -111,3 +111,7 @@ exports.editArticle = (articleId, articleInfo) => {
       return article.rows[0];
     });
 };
+
+exports.selectUsers = () => {
+  return db.query(`SELECT * FROM users;`).then((users) => users.rows);
+};
