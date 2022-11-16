@@ -5,7 +5,24 @@ exports.selectTopics = () => {
   return db.query(`SELECT * FROM topics;`).then((topics) => topics.rows);
 };
 
-exports.selectArticles = () => {
+exports.selectArticles = (topicFilter,sortBy = 'created_at',orderBy = 'desc',queryNames) => {
+  let where = ""//responds with all articles if topic query omitted
+  let topicArr = []
+  if(topicFilter) {
+    where = 'WHERE topic = $1'
+    topicArr.push(topicFilter)
+  }
+  const validColumns = ["title", "topic", "author",'body','created_at','votes'];
+  const validOrders = ["desc", "asc"];
+  const validQueries = ['topic','sort_by','order_by']
+  for(i=0; i<queryNames.length;i++){
+    if(!validQueries.includes(queryNames[i])) {
+      return Promise.reject({ status: 400, msg: "bad request!" });
+    }
+  }
+  if (!validColumns.includes(sortBy) || !validOrders.includes(orderBy)) {
+    return Promise.reject({ status: 400, msg: "bad request!" });
+  }
   return db
     .query(
       `
@@ -18,11 +35,15 @@ exports.selectArticles = () => {
     COUNT(*) AS comment_count FROM articles
     FULL OUTER JOIN comments
     ON articles.article_id = comments.article_id
+    ${where}
     GROUP BY articles.article_id
-    ORDER BY created_at DESC;
-    `
+    ORDER BY ${sortBy} ${orderBy};
+    `,
+    topicArr
     )
-    .then((articles) => articles.rows);
+    .then((articles) => {
+      return articles.rows
+    });
 };
 
 exports.selectArticleById = (articleId) => {

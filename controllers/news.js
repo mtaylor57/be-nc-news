@@ -14,9 +14,15 @@ exports.getTopics = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  selectArticles().then((articles) => {
+  const topicFilter = req.query.topic
+  const sortBy = req.query.sort_by
+  const orderBy = req.query.order_by
+  const queryNames = Object.keys(req.query)
+  selectArticles(topicFilter,sortBy,orderBy,queryNames).then((articles) => {
     res.status(200).send({ articles });
-  });
+  }).catch((err) => {
+    next(err)
+  })
 };
 
 exports.getArticleById = (req, res, next) => {

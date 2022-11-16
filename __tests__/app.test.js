@@ -51,7 +51,7 @@ describe("/api/articles", () => {
         });
       });
   });
-  test("the articles should be sorted by date in descending order", () => {
+  test("the articles should be sorted by date in descending order (default)", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -59,6 +59,70 @@ describe("/api/articles", () => {
         const { articles } = result.body;
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
+  });
+  test('the articles should be sorted by any valid column in descending order', () => {
+    return request(app)
+      .get("/api/articles?sort_by=author")
+      .expect(200)
+      .then((result) => {
+        const { articles } = result.body;
+        expect(articles).toBeSortedBy("author", { descending: true });
+      });
+  });
+  test('the articles should be sorted by any valid column in the order specified', () => {
+    return request(app)
+      .get("/api/articles?sort_by=author&order_by=asc")
+      .expect(200)
+      .then((result) => {
+        const { articles } = result.body;
+        expect(articles).toBeSortedBy("author", { descending: false });
+      });
+  });
+  test('should get articles filtered by the given topic', () => {
+    return request(app)
+    .get('/api/articles?topic=cats')
+    .expect(200)
+    .then((result) => {
+      const { articles } = result.body
+      expect(articles).toHaveLength(1)
+      articles.forEach((article) => {
+        expect(article).toMatchObject({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          topic: 'cats',
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          comment_count: expect.any(String),
+        });
+      })
+    })
+  });
+  describe('error handling', () => {
+    test('should return a message if sort_by query is not valid', () => {
+      return request(app)
+      .get('/api/articles?sort_by=somethingbad')
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe('bad request!')
+      })
+    });
+    test('should return a message if order_by query is not valid', () => {
+      return request(app)
+      .get('/api/articles?order_by=somethingbad')
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe('bad request!')
+      })
+    });
+    test.only('what if query doesnt exist', () => {
+      return request(app)
+      .get('/api/articles?bad_query=somethingbad')
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe('bad request!')
+      })
+    });
   });
 });
 
