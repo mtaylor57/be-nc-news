@@ -5,6 +5,7 @@ const {
   selectCommentsByArticleId,
   editArticle,
   insertComment,
+  selectUsers,
 } = require("../models/news.js");
 
 exports.getTopics = (req, res, next) => {
@@ -65,6 +66,16 @@ exports.patchArticle = (req, res, next) => {
   editArticle(articleId, articleInfo)
     .then((article) => {
       res.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getUsers = (req, res, next) => {
+  selectUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch((err) => {
       next(err);

@@ -29,7 +29,7 @@ describe("/api/topics", () => {
   });
 });
 
-describe("/api/articles", () => {
+describe.only("/api/articles", () => {
   test("should get an array of articles with correct properties and comment count", () => {
     return request(app)
       .get("/api/articles")
@@ -331,6 +331,25 @@ describe("/api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("invalid foreign key");
+      });
+  });
+});
+
+describe("GET/api/users", () => {
+  test("should respond with an array of all users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((result) => {
+        const { users } = result.body;
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
       });
   });
 });

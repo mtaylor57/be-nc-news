@@ -5,6 +5,7 @@ exports.selectTopics = () => {
   return db.query(`SELECT * FROM topics;`).then((topics) => topics.rows);
 };
 
+
 exports.selectArticles = (topicFilter,sortBy = 'created_at',orderBy = 'desc',queryNames) => {
   let where = ""//responds with all articles if topic query omitted
   let topicArr = []
@@ -23,6 +24,7 @@ exports.selectArticles = (topicFilter,sortBy = 'created_at',orderBy = 'desc',que
   if (!validColumns.includes(sortBy) || !validOrders.includes(orderBy)) {
     return Promise.reject({ status: 400, msg: "bad request!" });
   }
+
   return db
     .query(
       `
@@ -131,4 +133,8 @@ exports.editArticle = (articleId, articleInfo) => {
     .then((article) => {
       return article.rows[0];
     });
+};
+
+exports.selectUsers = () => {
+  return db.query(`SELECT * FROM users;`).then((users) => users.rows);
 };
