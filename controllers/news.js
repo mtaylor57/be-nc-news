@@ -8,7 +8,7 @@ const {
   selectUsers,
   removeComment,
 } = require("../models/news.js");
-let endpoints = require('../endpoints.json')
+let endpoints = require("../endpoints.json");
 
 exports.getTopics = (req, res, next) => {
   selectTopics().then((topics) => {
@@ -17,15 +17,17 @@ exports.getTopics = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  const topicFilter = req.query.topic
-  const sortBy = req.query.sort_by
-  const orderBy = req.query.order_by
-  const queryNames = Object.keys(req.query)
-  selectArticles(topicFilter,sortBy,orderBy,queryNames).then((articles) => {
-    res.status(200).send({ articles });
-  }).catch((err) => {
-    next(err)
-  })
+  const topicFilter = req.query.topic;
+  const sortBy = req.query.sort_by;
+  const orderBy = req.query.order_by;
+  const queryNames = Object.keys(req.query);
+  selectArticles(topicFilter, sortBy, orderBy, queryNames)
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getArticleById = (req, res, next) => {
@@ -84,16 +86,17 @@ exports.getUsers = (req, res, next) => {
     });
 };
 
-exports.deleteComment = (req,res,next) => {
-  const commentId = req.params.comment_id
+exports.deleteComment = (req, res, next) => {
+  const commentId = req.params.comment_id;
   removeComment(commentId)
-  .then(() => {
-    res.status(204).send()
-  }).catch((err) => {
-    next(err)
-  })
-}
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
 
-exports.getJson = (req,res,next) => {
-  res.status(200).send({endpoints})
-}
+exports.getJson = (req, res, next) => {
+  res.status(200).send({ endpoints });
+};

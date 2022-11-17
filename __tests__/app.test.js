@@ -3,7 +3,7 @@ const app = require("../app.js");
 const db = require("../db/connection.js");
 const data = require("../db/data/test-data");
 const seed = require("../db/seeds/seed.js");
-const jsonObj = require('../endpoints.json')
+const jsonObj = require("../endpoints.json");
 
 afterAll(() => {
   return db.end();
@@ -29,7 +29,6 @@ describe("GET/api/topics", () => {
       });
   });
 });
-
 
 describe("GET/api/articles", () => {
   test("should get an array of articles with correct properties and comment count", () => {
@@ -62,7 +61,7 @@ describe("GET/api/articles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
-  test('the articles should be sorted by any valid column in descending order', () => {
+  test("the articles should be sorted by any valid column in descending order", () => {
     return request(app)
       .get("/api/articles?sort_by=author")
       .expect(200)
@@ -71,7 +70,7 @@ describe("GET/api/articles", () => {
         expect(articles).toBeSortedBy("author", { descending: true });
       });
   });
-  test('the articles should be sorted by any valid column in the order specified', () => {
+  test("the articles should be sorted by any valid column in the order specified", () => {
     return request(app)
       .get("/api/articles?sort_by=author&order_by=asc")
       .expect(200)
@@ -80,50 +79,50 @@ describe("GET/api/articles", () => {
         expect(articles).toBeSortedBy("author", { descending: false });
       });
   });
-  test('should get articles filtered by the given topic', () => {
+  test("should get articles filtered by the given topic", () => {
     return request(app)
-    .get('/api/articles?topic=cats')
-    .expect(200)
-    .then((result) => {
-      const { articles } = result.body
-      expect(articles).toHaveLength(1)
-      articles.forEach((article) => {
-        expect(article).toMatchObject({
-          author: expect.any(String),
-          title: expect.any(String),
-          article_id: expect.any(Number),
-          topic: 'cats',
-          created_at: expect.any(String),
-          votes: expect.any(Number),
-          comment_count: expect.any(String),
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then((result) => {
+        const { articles } = result.body;
+        expect(articles).toHaveLength(1);
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: "cats",
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(String),
+          });
         });
-      })
-    })
+      });
   });
-  describe('error handling', () => {
-    test('should return a message if sort_by query is not valid', () => {
+  describe("error handling", () => {
+    test("should return a message if sort_by query is not valid", () => {
       return request(app)
-      .get('/api/articles?sort_by=somethingbad')
-      .expect(400)
-      .then(({body}) => {
-        expect(body.msg).toBe('bad request!')
-      })
+        .get("/api/articles?sort_by=somethingbad")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("bad request!");
+        });
     });
-    test('should return a message if order_by query is not valid', () => {
+    test("should return a message if order_by query is not valid", () => {
       return request(app)
-      .get('/api/articles?order_by=somethingbad')
-      .expect(400)
-      .then(({body}) => {
-        expect(body.msg).toBe('bad request!')
-      })
+        .get("/api/articles?order_by=somethingbad")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("bad request!");
+        });
     });
-    test('what if query doesnt exist', () => {
+    test("what if query doesnt exist", () => {
       return request(app)
-      .get('/api/articles?bad_query=somethingbad')
-      .expect(400)
-      .then(({body}) => {
-        expect(body.msg).toBe('bad request!')
-      })
+        .get("/api/articles?bad_query=somethingbad")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("bad request!");
+        });
     });
   });
 });
@@ -142,11 +141,11 @@ describe("GET/api/articles/:article_id", () => {
           author: "icellusedkars",
           body: expect.any(String),
           created_at: "2020-10-16T05:03:00.000Z",
-          votes: expect.any(Number)
+          votes: expect.any(Number),
         });
       });
   });
-  test('should return an article object with comment count (non-zero comment count)', () => {
+  test("should return an article object with comment count (non-zero comment count)", () => {
     return request(app)
       .get("/api/articles/3")
       .expect(200)
@@ -160,7 +159,7 @@ describe("GET/api/articles/:article_id", () => {
           body: expect.any(String),
           created_at: "2020-11-03T09:12:00.000Z",
           votes: expect.any(Number),
-          comment_count: '2'
+          comment_count: "2",
         });
       });
   });
@@ -375,14 +374,11 @@ describe("GET/api/users", () => {
   });
 });
 
-
-describe('DELETE/api/comments/:comment_id', () => {
-  test('should respond with 204 and no content when delete is complete', () => {
-    return request(app)
-    .delete('/api/comments/1')
-    .expect(204)
+describe("DELETE/api/comments/:comment_id", () => {
+  test("should respond with 204 and no content when delete is complete", () => {
+    return request(app).delete("/api/comments/1").expect(204);
   });
-  test('should return message when comment_id is NaN', () => {
+  test("should return message when comment_id is NaN", () => {
     return request(app)
       .delete("/api/comments/a")
       .expect(400)
@@ -397,17 +393,17 @@ describe('DELETE/api/comments/:comment_id', () => {
       .then(({ body }) => {
         expect(body.msg).toBe("comment not found");
       });
-
   });
 });
 
-describe('GET/api', () => {
-  test('should respond with a JSON describing all the available endpoints', () => {
+describe("GET/api", () => {
+  test("should respond with a JSON describing all the available endpoints", () => {
     return request(app)
-    .get('/api')
-    .expect(200)
-    .then((result) => {
-      const { endpoints } = result.body
-      expect(endpoints).toMatchObject(jsonObj)
-    })
-    })
+      .get("/api")
+      .expect(200)
+      .then((result) => {
+        const { endpoints } = result.body;
+        expect(endpoints).toMatchObject(jsonObj);
+      });
+  });
+});

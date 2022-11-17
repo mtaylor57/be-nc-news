@@ -5,19 +5,30 @@ exports.selectTopics = () => {
   return db.query(`SELECT * FROM topics;`).then((topics) => topics.rows);
 };
 
-
-exports.selectArticles = (topicFilter,sortBy = 'created_at',orderBy = 'desc',queryNames) => {
-  let where = ""//responds with all articles if topic query omitted
-  let topicArr = []
-  if(topicFilter) {
-    where = 'WHERE topic = $1'
-    topicArr.push(topicFilter)
+exports.selectArticles = (
+  topicFilter,
+  sortBy = "created_at",
+  orderBy = "desc",
+  queryNames
+) => {
+  let where = ""; //responds with all articles if topic query omitted
+  let topicArr = [];
+  if (topicFilter) {
+    where = "WHERE topic = $1";
+    topicArr.push(topicFilter);
   }
-  const validColumns = ["title", "topic", "author",'body','created_at','votes'];
+  const validColumns = [
+    "title",
+    "topic",
+    "author",
+    "body",
+    "created_at",
+    "votes",
+  ];
   const validOrders = ["desc", "asc"];
-  const validQueries = ['topic','sort_by','order_by']
-  for(i=0; i<queryNames.length;i++){
-    if(!validQueries.includes(queryNames[i])) {
+  const validQueries = ["topic", "sort_by", "order_by"];
+  for (i = 0; i < queryNames.length; i++) {
+    if (!validQueries.includes(queryNames[i])) {
       return Promise.reject({ status: 400, msg: "bad request!" });
     }
   }
@@ -41,10 +52,10 @@ exports.selectArticles = (topicFilter,sortBy = 'created_at',orderBy = 'desc',que
     GROUP BY articles.article_id
     ORDER BY ${sortBy} ${orderBy};
     `,
-    topicArr
+      topicArr
     )
     .then((articles) => {
-      return articles.rows
+      return articles.rows;
     });
 };
 
@@ -153,17 +164,21 @@ exports.removeComment = (commentId) => {
   if (isNaN(Number(commentId))) {
     return Promise.reject({ status: 400, msg: "id is not a number" });
   }
-  return db.query(`
+  return db
+    .query(
+      `
   DELETE FROM comments
   WHERE comment_id = $1
   RETURNING *;
-  `,[commentId]).then((result) => {
-    if(result.rows.length === 0){
-      return Promise.reject({
-        status: 404,
-        msg: "comment not found",
-      });
-    }
-  })
-}
-
+  `,
+      [commentId]
+    )
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "comment not found",
+        });
+      }
+    });
+};
