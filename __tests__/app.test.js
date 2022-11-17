@@ -10,7 +10,7 @@ afterAll(() => {
 
 beforeEach(() => seed(data));
 
-describe("/api/topics", () => {
+describe("GET/api/topics", () => {
   test("should get an array of topic objects", () => {
     return request(app)
       .get("/api/topics")
@@ -29,7 +29,8 @@ describe("/api/topics", () => {
   });
 });
 
-describe("/api/articles", () => {
+
+describe("GET/api/articles", () => {
   test("should get an array of articles with correct properties and comment count", () => {
     return request(app)
       .get("/api/articles")
@@ -126,7 +127,7 @@ describe("/api/articles", () => {
   });
 });
 
-describe("/api/articles/:article_id", () => {
+describe("GET/api/articles/:article_id", () => {
   test("should get an article object specified by the endpoint", () => {
     return request(app)
       .get("/api/articles/2")
@@ -140,7 +141,25 @@ describe("/api/articles/:article_id", () => {
           author: "icellusedkars",
           body: expect.any(String),
           created_at: "2020-10-16T05:03:00.000Z",
+          votes: expect.any(Number)
+        });
+      });
+  });
+  test('should return an article object with comment count (non-zero comment count)', () => {
+    return request(app)
+      .get("/api/articles/3")
+      .expect(200)
+      .then((result) => {
+        const { article } = result.body;
+        expect(article).toMatchObject({
+          article_id: 3,
+          title: expect.any(String),
+          topic: "mitch",
+          author: "icellusedkars",
+          body: expect.any(String),
+          created_at: "2020-11-03T09:12:00.000Z",
           votes: expect.any(Number),
+          comment_count: '2'
         });
       });
   });
@@ -162,7 +181,7 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-describe("/api/articles/:article_id/comments", () => {
+describe("GET/api/articles/:article_id/comments", () => {
   test("should get all comments associated with article id with most recent first", () => {
     return request(app)
       .get("/api/articles/1/comments")
@@ -269,7 +288,7 @@ describe("PATCH/api/articles/:article_id", () => {
   });
 });
 
-describe("/api/articles/:article_id/comments", () => {
+describe("POST/api/articles/:article_id/comments", () => {
   test("should post an object with username and body properties", () => {
     const newComment = {
       username: "butter_bridge",
