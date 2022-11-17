@@ -138,3 +138,21 @@ exports.editArticle = (articleId, articleInfo) => {
 exports.selectUsers = () => {
   return db.query(`SELECT * FROM users;`).then((users) => users.rows);
 };
+
+exports.removeComment = (commentId) => {
+  if (isNaN(Number(commentId))) {
+    return Promise.reject({ status: 400, msg: "id is not a number" });
+  }
+  return db.query(`
+  DELETE FROM comments
+  WHERE comment_id = $1
+  RETURNING *;
+  `,[commentId]).then((result) => {
+    if(result.rows.length === 0){
+      return Promise.reject({
+        status: 404,
+        msg: "comment not found",
+      });
+    }
+  })
+}
