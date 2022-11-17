@@ -7,6 +7,7 @@ const {
   insertComment,
   selectUsers,
 } = require("../models/news.js");
+let endpoints = require('../endpoints.json')
 
 exports.getTopics = (req, res, next) => {
   selectTopics().then((topics) => {
@@ -81,3 +82,7 @@ exports.getUsers = (req, res, next) => {
       next(err);
     });
 };
+
+exports.getJson = (req,res,next) => {
+  res.status(200).send({endpoints})
+}

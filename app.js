@@ -8,12 +8,14 @@ const {
   patchArticle,
   postComment,
   getUsers,
+  getJson,
 } = require("./controllers/news.js");
 
 const app = express();
 
 app.use(express.json());
 
+app.get('/api',getJson)
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
