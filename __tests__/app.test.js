@@ -127,7 +127,7 @@ describe("GET/api/articles", () => {
 });
 
 describe("GET/api/articles/:article_id", () => {
-  test("should get an article object (with comment count) specified by the endpoint", () => {
+  test("should get an article object specified by the endpoint", () => {
     return request(app)
       .get("/api/articles/2")
       .expect(200)
@@ -140,8 +140,7 @@ describe("GET/api/articles/:article_id", () => {
           author: "icellusedkars",
           body: expect.any(String),
           created_at: "2020-10-16T05:03:00.000Z",
-          votes: expect.any(Number),
-          comment_count: '0'
+          votes: expect.any(Number)
         });
       });
   });
