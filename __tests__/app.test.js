@@ -30,6 +30,7 @@ describe("GET/api/topics", () => {
   });
 });
 
+
 describe("GET/api/articles", () => {
   test("should get an array of articles with correct properties and comment count", () => {
     return request(app)
@@ -374,6 +375,32 @@ describe("GET/api/users", () => {
   });
 });
 
+
+describe('DELETE/api/comments/:comment_id', () => {
+  test('should respond with 204 and no content when delete is complete', () => {
+    return request(app)
+    .delete('/api/comments/1')
+    .expect(204)
+  });
+  test('should return message when comment_id is NaN', () => {
+    return request(app)
+      .delete("/api/comments/a")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("id is not a number");
+      });
+  });
+  test("should return a message if comment id not found", () => {
+    return request(app)
+      .delete("/api/comments/1000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("comment not found");
+      });
+
+  });
+});
+
 describe('GET/api', () => {
   test('should respond with a JSON describing all the available endpoints', () => {
     return request(app)
@@ -383,5 +410,4 @@ describe('GET/api', () => {
       const { endpoints } = result.body
       expect(endpoints).toMatchObject(jsonObj)
     })
-  });
-});
+    })
