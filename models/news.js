@@ -88,7 +88,7 @@ exports.selectCommentsByArticleId = (articleId) => {
       //otherwise goes straight to catch
       return db.query(
         `
-        SELECT comment_id,votes,created_at,author,body FROM comments
+        SELECT comment_id,votes,created_at,author,article_id,body FROM comments
         WHERE article_id = $1
         ORDER BY created_at DESC;
         `,
@@ -166,3 +166,4 @@ exports.removeComment = (commentId) => {
     }
   })
 }
+

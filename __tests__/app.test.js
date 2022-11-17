@@ -3,6 +3,7 @@ const app = require("../app.js");
 const db = require("../db/connection.js");
 const data = require("../db/data/test-data");
 const seed = require("../db/seeds/seed.js");
+const jsonObj = require('../endpoints.json')
 
 afterAll(() => {
   return db.end();
@@ -196,6 +197,7 @@ describe("GET/api/articles/:article_id/comments", () => {
             body: expect.any(String),
             votes: expect.any(Number),
             author: expect.any(String),
+            article_id: 1,
             created_at: expect.any(String),
           });
         });
@@ -373,6 +375,7 @@ describe("GET/api/users", () => {
   });
 });
 
+
 describe('DELETE/api/comments/:comment_id', () => {
   test('should respond with 204 and no content when delete is complete', () => {
     return request(app)
@@ -394,5 +397,17 @@ describe('DELETE/api/comments/:comment_id', () => {
       .then(({ body }) => {
         expect(body.msg).toBe("comment not found");
       });
+
   });
 });
+
+describe('GET/api', () => {
+  test('should respond with a JSON describing all the available endpoints', () => {
+    return request(app)
+    .get('/api')
+    .expect(200)
+    .then((result) => {
+      const { endpoints } = result.body
+      expect(endpoints).toMatchObject(jsonObj)
+    })
+    })

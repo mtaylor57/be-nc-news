@@ -8,6 +8,7 @@ const {
   selectUsers,
   removeComment,
 } = require("../models/news.js");
+let endpoints = require('../endpoints.json')
 
 exports.getTopics = (req, res, next) => {
   selectTopics().then((topics) => {
@@ -91,4 +92,8 @@ exports.deleteComment = (req,res,next) => {
   }).catch((err) => {
     next(err)
   })
+}
+
+exports.getJson = (req,res,next) => {
+  res.status(200).send({endpoints})
 }
