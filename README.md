@@ -48,6 +48,6 @@ psql version: 10.22
 
 ## Link to the hosted version of this app
 You can follow this link to access the hosted version of this application
-LINK HERE
+https://shy-tan-seagull-gear.cyclic.app/
 
 
