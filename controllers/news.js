@@ -102,7 +102,7 @@ exports.getJson = (req, res, next) => {
   res.status(200).send({ endpoints });
 };
 exports.seedDbs = (req,res,next) => {
-    require('../db/seeds/run-seed.js').then(() => {
+    require('../db/seeds/run-seed.js')
       res.status(200).send({msg: 'Database sucessfully seeded!'})
-    })
+    
 }
