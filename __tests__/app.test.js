@@ -407,3 +407,9 @@ describe("GET/api", () => {
       });
   });
 });
+
+// describe('seeding database', () => {
+//   test('should respond with message when database sucessfully seeded', () => {
+    
+//   });
+// });
