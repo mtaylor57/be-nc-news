@@ -9,6 +9,8 @@ const {
   removeComment,
 } = require("../models/news.js");
 let endpoints = require("../endpoints.json");
+const seed = require("../db/seeds/seed.js");
+const devData = require("../db/data/development-data/index.js")
 
 exports.getTopics = (req, res, next) => {
   selectTopics().then((topics) => {
@@ -101,6 +103,9 @@ exports.getJson = (req, res, next) => {
   res.status(200).send({ endpoints });
 };
 exports.seedDbs = (req, res, next) => {
-  require("../db/seeds/run-seed.js");
-  res.status(200).send({ msg: "Database sucessfully seeded!" });
+  seed(devData).then(() => {
+    res.status(200).send({ msg: "Database sucessfully seeded!" });
+  }).catch((err) => {
+    next(err)
+  })
 };
