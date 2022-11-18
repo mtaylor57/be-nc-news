@@ -9,9 +9,7 @@ const {
   removeComment,
 } = require("../models/news.js");
 let endpoints = require("../endpoints.json");
-const devData = require('../db/data/development-data/index.js');
-const seed = require('../db/seeds/seed.js');
-const db = require('../db/connection.js');
+
 
 exports.getTopics = (req, res, next) => {
   selectTopics().then((topics) => {
@@ -104,9 +102,7 @@ exports.getJson = (req, res, next) => {
   res.status(200).send({ endpoints });
 };
 exports.seedDbs = (req,res,next) => {
-  seed(devData).then(() => {
-    res.status(200).send({msg: 'Database sucessfully seeded!'})
-    db.end()
-  });
-
+    require('../db/seeds/run-seed.js').then(() => {
+      res.status(200).send({msg: 'Database sucessfully seeded!'})
+    })
 }
